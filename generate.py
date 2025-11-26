@@ -31,38 +31,38 @@ def page(name, output_name=None):
 
 @page("index")
 def index():
-    data = yaml.load(open("univs.yaml", "r"))
-    data.update(yaml.load(open("main.yaml", "r")))
+    data = yaml.safe_load(open("univs.yaml", "r"))
+    data.update(yaml.safe_load(open("main.yaml", "r")))
     return data
 
 
 @page("participate")
 def participate():
-    return yaml.load(open("univs.yaml", "r"))
+    return yaml.safe_load(open("univs.yaml", "r"))
 
 
 @page("maintenance")
 def maintenance():
-    return yaml.load(open("univs.yaml", "r"))
+    return yaml.safe_load(open("univs.yaml", "r"))
 
 
 @page("team")
 def team():
-    data = yaml.load(open("univs.yaml", "r"))
-    data.update(yaml.load(open("team.yml", "r")))
+    data = yaml.safe_load(open("univs.yaml", "r"))
+    data.update(yaml.safe_load(open("team.yml", "r")))
     return data
 
 
 @page("news")
 def news():
     parser = Markdown(extensions=["pymdownx.tilde"])
-    data = yaml.load(open("univs.yaml", "r"))
+    data = yaml.safe_load(open("univs.yaml", "r"))
     data["news"] = []
     for input_fname in sorted(glob.glob("_posts/*.md"), reverse=True):
         with open(input_fname, "r") as input_file:
             input_data = input_file.read()
         yaml_data, html_data = (_.strip() for _ in input_data.split("---\n") if _)
-        post = yaml.load(yaml_data)
+        post = yaml.safe_load(yaml_data)
         (year, month, day, title) = os.path.basename(input_fname)[:-3].split("-", 3)
         post["url"] = "/{}/{}/{}/{}.html".format(year, month, day, title)
         post["date"] = "{}/{}/{}".format(month, day, year)
@@ -81,7 +81,7 @@ def render_full_width_page(input_fname, output_fname):
         input_data = input_file.read()
     yaml_data, html_data = (_.strip() for _ in input_data.split("---\n") if _)
 
-    context = yaml.load(yaml_data)
+    context = yaml.safe_load(yaml_data)
     context["content"] = parser.convert(html_data)
 
     with open(output_fname, "w") as output_file:
